@@ -1,8 +1,11 @@
 import React, { useState } from 'react';
+import { Copy, Save } from 'lucide-react';
 import { ControlPanel } from '@/components/ControlPanel';
 import { SubtitleOverlay } from '@/components/SubtitleOverlay';
 import { RegionSelector } from '@/components/RegionSelector';
 import { VocabularyPanel } from '@/components/VocabularyPanel';
+import { Button } from '@/components/ui/button';
+import { Badge } from '@/components/ui/badge';
 
 const Index = () => {
   const [showRegionSelector, setShowRegionSelector] = useState(false);
@@ -79,58 +82,85 @@ const Index = () => {
             />
           </div>
 
-          {/* Center: Demo Area */}
-          <div className="flex-1 space-y-6">
-            <div className="glass rounded-lg p-8 border-gradient">
-              <h2 className="text-xl font-semibold mb-4 flex items-center gap-2">
-                🎮 Live Translation Demo
-              </h2>
+          {/* Right: Screen Region Display */}
+          <div className="flex-1 flex flex-col gap-4">
+            {/* Screen Region Area */}
+            <div className="glass rounded-lg border-gradient flex-1 min-h-[400px]">
+              <div className="p-4 border-b border-border/50">
+                <h2 className="text-lg font-semibold flex items-center gap-2">
+                  📺 Selected Region
+                  {selectedRegion && (
+                    <Badge variant="secondary" className="text-xs">
+                      {selectedRegion.width}×{selectedRegion.height}
+                    </Badge>
+                  )}
+                </h2>
+              </div>
               
-              <div className="space-y-4">
-                <div className="text-sm text-muted-foreground">
-                  This UI demonstrates the core interfaces for your Game-Lang Translator:
-                </div>
-                
-                <div className="grid md:grid-cols-2 gap-4 text-sm">
-                  <div className="space-y-2">
-                    <div className="font-medium text-primary">Current Features:</div>
-                    <ul className="space-y-1 text-muted-foreground">
-                      <li>✅ Control Panel with language selection</li>
-                      <li>✅ Screen region selection interface</li>
-                      <li>✅ Real-time subtitle overlay</li>
-                      <li>✅ Vocabulary management system</li>
-                      <li>✅ Gaming-focused dark theme</li>
-                    </ul>
+              <div className="p-6 h-full flex items-center justify-center">
+                {selectedRegion ? (
+                  <div className="w-full h-full bg-muted/20 rounded-lg border-2 border-dashed border-muted-foreground/30 flex items-center justify-center">
+                    <div className="text-center space-y-2">
+                      <div className="text-2xl">🎮</div>
+                      <div className="text-sm text-muted-foreground">
+                        Screen region content will appear here
+                      </div>
+                      <div className="text-xs text-muted-foreground">
+                        {selectedRegion.width} × {selectedRegion.height} pixels
+                      </div>
+                    </div>
                   </div>
-                  
-                  <div className="space-y-2">
-                    <div className="font-medium text-accent">Planned Features:</div>
-                    <ul className="space-y-1 text-muted-foreground">
-                      <li>🔄 Interactive word highlighting</li>
-                      <li>🔄 Dual-language subtitles</li>
-                      <li>🔄 Advanced OCR settings</li>
-                      <li>🔄 Export/import functionality</li>
-                      <li>🔄 Performance optimizations</li>
-                    </ul>
+                ) : (
+                  <div className="text-center space-y-4">
+                    <div className="text-4xl opacity-30">📱</div>
+                    <div className="space-y-2">
+                      <div className="text-lg font-medium text-muted-foreground">
+                        No Region Selected
+                      </div>
+                      <div className="text-sm text-muted-foreground max-w-sm">
+                        Use the control panel to select a screen region for translation
+                      </div>
+                    </div>
                   </div>
-                </div>
+                )}
+              </div>
+            </div>
 
-                <div className="mt-6 p-4 bg-gradient-to-r from-primary/10 to-accent/10 rounded-lg border border-primary/20">
-                  <div className="text-sm font-medium mb-2">💡 Design Philosophy</div>
-                  <div className="text-xs text-muted-foreground">
-                    Unobtrusive overlay design that enhances gaming without distraction. 
-                    Clean, readable typography with excellent contrast for subtitle readability.
-                    Gaming aesthetic with cyber-punk inspired colors and glass morphism effects.
-                  </div>
+            {/* Subtitle Interface */}
+            <div className="glass rounded-lg p-4 border-gradient">
+              <div className="flex items-center justify-between mb-3">
+                <h3 className="text-sm font-semibold text-muted-foreground">LIVE TRANSLATION</h3>
+                <Badge variant={mockSubtitleData.confidence > 80 ? "success" : "secondary"} className="text-xs">
+                  {mockSubtitleData.confidence}% confidence
+                </Badge>
+              </div>
+              
+              <div className="space-y-3">
+                <div className="text-sm text-muted-foreground border-l-2 border-accent pl-3">
+                  {mockSubtitleData.sourceText}
+                </div>
+                <div className="text-base font-medium text-foreground leading-relaxed">
+                  {mockSubtitleData.translatedText}
+                </div>
+              </div>
+              
+              <div className="flex items-center justify-between mt-4 pt-3 border-t border-border/50">
+                <div className="flex items-center gap-2">
+                  <Button size="sm" variant="ghost">
+                    <Copy className="h-3 w-3" />
+                  </Button>
+                  <Button size="sm" variant="ghost">
+                    <Save className="h-3 w-3" />
+                  </Button>
+                </div>
+                <div className="text-xs text-muted-foreground">
+                  Japanese → English
                 </div>
               </div>
             </div>
           </div>
         </div>
       </div>
-
-      {/* Overlay Components */}
-      <SubtitleOverlay {...mockSubtitleData} />
 
       {/* Modal Components */}
       <RegionSelector
